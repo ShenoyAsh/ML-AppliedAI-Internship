@@ -211,9 +211,13 @@ def train(spec, fast: bool = False) -> dict:
         print(f"  {label:<12} t={m['threshold']:.2f}  accuracy {m['accuracy']:.3f}  "
               f"sensitivity {m['sensitivity']:.3f}  specificity {m['specificity']:.3f}")
 
-    big = len(X_test) > 5000
-    pi = permutation_importance(model, X_test, y_test, scoring="roc_auc",
-                                n_repeats=5 if big else 30, max_samples=20000 if big else 1.0,
+    # Subsample big test sets ourselves: permutation_importance(max_samples=...) scores
+    # the baseline on all rows but the shuffles on the subsample, biasing every feature.
+    big = len(X_test) > 20000
+    X_imp, y_imp = (train_test_split(X_test, y_test, train_size=20000, stratify=y_test,
+                                     random_state=RANDOM_STATE)[::2] if big else (X_test, y_test))
+    pi = permutation_importance(model, X_imp, y_imp, scoring="roc_auc",
+                                n_repeats=10 if big else 30,
                                 random_state=RANDOM_STATE, n_jobs=-1)
     imp = pd.DataFrame({"mean": pi.importances_mean, "std": pi.importances_std},
                        index=spec.FEATURES)
