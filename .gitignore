@@ -1,0 +1,65 @@
+# Byte-compiled / optimized / Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+htmlcov/
+
+# Documents & Presentations (per .gitignore policy)
+*.pdf
+*.pptx
+*.ppt
+*.docx
+*.doc
+*.xlsx
+*.xls
+
+# Secrets & Environment Variables
+.env
+.env.*
+!.env.example
+secrets.toml
+.streamlit/secrets.toml
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+id_rsa*
+id_ed25519*
+
+# OS & Editor files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.ipynb_checkpoints/
