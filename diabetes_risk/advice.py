@@ -1,82 +1,92 @@
-"""Turn a model probability into a risk band, an explanation and health tips."""
-from dataclasses import dataclass
+"""Turn a model probability into a risk band, an explanation and health tips.
+
+Tips are returned as (locale key, format params) so the app can show them in
+any language; see locales/*.json.
+"""
+from typing import Callable
 
 import numpy as np
 import pandas as pd
 
-from .config import FEATURES, LABELS
+Tip = tuple[str, dict]
 
 
-@dataclass(frozen=True)
-class RiskBand:
-    level: str        # "Low" | "Moderate" | "High"
-    message: str
-
-
-def risk_band(prob: float, screening_threshold: float, high_threshold: float) -> RiskBand:
+def risk_band(prob: float, screening_threshold: float, high_threshold: float) -> str:
+    """'low' | 'moderate' | 'high' — also the locale key suffix for the message."""
     if prob >= high_threshold:
-        return RiskBand("High", "High risk — please see a doctor soon for an HbA1c or "
-                                "fasting blood glucose test.")
+        return "high"
     if prob >= screening_threshold:
-        return RiskBand("Moderate", "Moderate risk — a confirmatory blood test is recommended, "
-                                    "along with the lifestyle steps below.")
-    return RiskBand("Low", "Low risk — keep up a healthy lifestyle and re-check every few years.")
+        return "moderate"
+    return "low"
 
 
-def to_frame(values: dict) -> pd.DataFrame:
-    """Single-row DataFrame in model column order; None becomes NaN (unknown)."""
-    row = {f: (np.nan if values.get(f) is None else float(values[f])) for f in FEATURES}
-    return pd.DataFrame([row], columns=FEATURES)
+def factor_contributions(predict_many: Callable[[list[dict]], np.ndarray], values: dict,
+                         reference: dict, features: list[str]) -> pd.Series:
+    """How much each answer moves the risk compared with a typical person.
 
-
-def factor_contributions(model, values: dict, reference: dict) -> pd.Series:
-    """How much each reading moves the risk compared with a typical person.
-
-    For every known feature we swap the user's value for the population median
-    and measure the change in predicted probability. Positive = raises risk.
-    Model-agnostic and easy to explain to non-experts.
+    For every known feature we swap the user's value for the population's typical
+    value and measure the change in predicted probability. Positive = raises risk.
+    Model-agnostic and easy to explain to non-experts. One batched prediction.
     """
-    base = to_frame(values)
-    p_user = model.predict_proba(base)[0, 1]
-    known = [f for f in FEATURES if values.get(f) is not None]
-    variants = pd.concat([base.assign(**{f: reference[f]}) for f in known], ignore_index=True)
-    p_ref = model.predict_proba(variants)[:, 1]
-    return pd.Series(p_user - p_ref, index=[LABELS[f] for f in known]).sort_values(
+    known = [f for f in features if values.get(f) is not None and values[f] != reference[f]]
+    probs = predict_many([values] + [{**values, f: reference[f]} for f in known])
+    return pd.Series(probs[0] - probs[1:], index=known, dtype=float).sort_values(
         key=np.abs, ascending=False)
 
 
-def health_tips(values: dict) -> list[str]:
-    """Plain-language guidance based on widely used clinical cut-offs."""
+def clinical_tips(v: dict) -> list[Tip]:
+    """Guidance for the detailed (lab readings) check, from common clinical cut-offs."""
     tips = []
-    g = values.get("Glucose")
+    g = v.get("Glucose")
     if g is not None:
         if g >= 200:
-            tips.append("Your 2-hour glucose is in the **diabetes range (≥ 200 mg/dL)**. "
-                        "Please see a doctor promptly.")
+            tips.append(("tip.glucose_diabetes", {}))
         elif g >= 140:
-            tips.append("Your 2-hour glucose suggests **impaired glucose tolerance "
-                        "(140–199 mg/dL, prediabetes)** — this is reversible with diet and activity.")
-    bmi = values.get("BMI")
-    if bmi is not None:
-        if bmi >= 30:
-            tips.append("BMI ≥ 30 is in the obese range. Losing even **5–7 % of body weight** "
-                        "cuts diabetes risk by more than half in prevention trials.")
-        elif bmi >= 23:
-            tips.append("BMI ≥ 23 already raises diabetes risk for people of South Asian descent. "
-                        "Aim for **150 minutes of brisk activity per week**.")
-    bp = values.get("BloodPressure")
+            tips.append(("tip.glucose_igt", {}))
+    tips += _bmi_tips(v.get("BMI"))
+    bp = v.get("BloodPressure")
     if bp is not None and bp >= 80:
-        tips.append("A diastolic pressure ≥ 80 mm Hg is classed as high blood pressure — "
-                    "reduce salt and get it checked, as it compounds diabetes risk.")
-    age = values.get("Age")
-    if age is not None and age >= 35:
-        tips.append("Guidelines recommend **routine diabetes screening for all adults 35+**, "
-                    "even without symptoms.")
-    dpf = values.get("DiabetesPedigreeFunction")
-    if dpf is not None and dpf >= 0.5:
-        tips.append("Your family-history score is above average — tell your doctor which "
-                    "relatives have diabetes.")
-    if not tips:
-        tips.append("Your readings look healthy. Keep eating whole foods, staying active and "
-                    "sleeping well.")
-    return tips
+        tips.append(("tip.diastolic_high", {}))
+    tips += _age_tips(v.get("Age"))
+    dpf = v.get("DiabetesPedigreeFunction")
+    if dpf is not None and dpf >= 0.45:
+        tips.append(("tip.family_history", {}))
+    return tips or [("tip.all_good", {})]
+
+
+def survey_tips(v: dict, age_years: float) -> list[Tip]:
+    """Guidance for the quick (questionnaire) check."""
+    tips = []
+    tips += _bmi_tips(v.get("BMI"))
+    if v.get("HighBP") is None or v.get("HighChol") is None:
+        tips.append(("tip.get_checked", {}))
+    if v.get("HighBP") == 1:
+        tips.append(("tip.bp_known", {}))
+    if v.get("PhysActivity") == 0:
+        tips.append(("tip.activity", {}))
+    if v.get("Fruits") == 0 or v.get("Veggies") == 0:
+        tips.append(("tip.diet", {}))
+    if v.get("Smoker") == 1:
+        tips.append(("tip.tobacco", {}))
+    if v.get("HvyAlcoholConsump") == 1:
+        tips.append(("tip.alcohol", {}))
+    if v.get("GenHlth", 0) >= 4:
+        tips.append(("tip.general_health", {}))
+    tips += _age_tips(age_years)
+    return tips or [("tip.all_good", {})]
+
+
+def _bmi_tips(bmi) -> list[Tip]:
+    if bmi is None:
+        return []
+    if bmi >= 30:
+        return [("tip.bmi_obese", {"bmi": f"{bmi:.1f}"})]
+    if bmi >= 23:
+        return [("tip.bmi_overweight", {"bmi": f"{bmi:.1f}"})]
+    return []
+
+
+def _age_tips(age) -> list[Tip]:
+    if age is not None and age >= 30:
+        return [("tip.ncd_screening", {})]
+    return []

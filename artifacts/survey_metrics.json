@@ -2,7 +2,7 @@
   "model": "survey",
   "title": "Quick check (CDC BRFSS survey)",
   "model_name": "Gradient Boosting",
-  "trained_at": "2026-10-17T14:06:37+00:00",
+  "trained_at": "2026-10-17T14:09:41+00:00",
   "sklearn_version": "1.9.1",
   "features": [
     "Age",
@@ -96,20 +96,20 @@
     }
   },
   "permutation_importance": {
-    "Age": 0.0303,
-    "Sex": -0.0045,
-    "BMI": 0.0339,
-    "HighBP": 0.0118,
-    "HighChol": 0.0058,
-    "GenHlth": 0.054,
-    "PhysActivity": -0.0063,
-    "Fruits": -0.0064,
-    "Veggies": -0.0063,
-    "Smoker": -0.0064,
-    "HvyAlcoholConsump": -0.0019,
-    "Stroke": -0.0057,
-    "HeartDiseaseorAttack": -0.0045,
-    "DiffWalk": -0.0046
+    "Age": 0.0374,
+    "Sex": 0.0026,
+    "BMI": 0.039,
+    "HighBP": 0.0171,
+    "HighChol": 0.0131,
+    "GenHlth": 0.0571,
+    "PhysActivity": 0.0003,
+    "Fruits": 0.0002,
+    "Veggies": 0.0002,
+    "Smoker": 0.0001,
+    "HvyAlcoholConsump": 0.0041,
+    "Stroke": 0.0005,
+    "HeartDiseaseorAttack": 0.0019,
+    "DiffWalk": 0.0014
   },
   "reference_values": {
     "Age": 8.0,

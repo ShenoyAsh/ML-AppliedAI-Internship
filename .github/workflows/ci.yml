@@ -12,5 +12,5 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      - run: python train.py --fast
+      - run: python train.py --fast   # both models, ~1 min
       - run: pytest -q
