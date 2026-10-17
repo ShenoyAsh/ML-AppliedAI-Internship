@@ -1,0 +1,162 @@
+{
+  "model": "survey",
+  "title": "Quick check (CDC BRFSS survey)",
+  "model_name": "Gradient Boosting",
+  "trained_at": "2026-10-17T14:06:37+00:00",
+  "sklearn_version": "1.9.1",
+  "features": [
+    "Age",
+    "Sex",
+    "BMI",
+    "HighBP",
+    "HighChol",
+    "GenHlth",
+    "PhysActivity",
+    "Fruits",
+    "Veggies",
+    "Smoker",
+    "HvyAlcoholConsump",
+    "Stroke",
+    "HeartDiseaseorAttack",
+    "DiffWalk"
+  ],
+  "n_patients": 253680,
+  "n_train": 202944,
+  "n_test": 50736,
+  "prevalence": 0.13933301797540207,
+  "target_sensitivity": 0.8,
+  "screening_threshold": 0.13411691435726675,
+  "high_threshold": 0.5,
+  "cv": {
+    "Logistic Regression": {
+      "roc_auc_mean": 0.8202,
+      "roc_auc_std": 0.0013,
+      "accuracy_mean": 0.8638,
+      "accuracy_std": 0.0008,
+      "recall_mean": 0.1539,
+      "recall_std": 0.0063,
+      "precision_mean": 0.5391,
+      "precision_std": 0.0095,
+      "f1_mean": 0.2395,
+      "f1_std": 0.0083
+    },
+    "Gradient Boosting": {
+      "roc_auc_mean": 0.8278,
+      "roc_auc_std": 0.002,
+      "accuracy_mean": 0.867,
+      "accuracy_std": 0.0012,
+      "recall_mean": 0.1554,
+      "recall_std": 0.0056,
+      "precision_mean": 0.5854,
+      "precision_std": 0.0159,
+      "f1_mean": 0.2456,
+      "f1_std": 0.0079
+    }
+  },
+  "test": {
+    "roc_auc": 0.823927415753654,
+    "pr_auc": 0.4188258220335055,
+    "brier": 0.09789777413218335,
+    "baseline_accuracy": 0.8606709239987386,
+    "at_screening_threshold": {
+      "threshold": 0.1341,
+      "accuracy": 0.71219646799117,
+      "sensitivity": 0.7985570802093648,
+      "specificity": 0.6982160441523347,
+      "precision": 0.29989905966105296,
+      "f1": 0.43604202070137493,
+      "confusion_matrix": [
+        [
+          30489,
+          13178
+        ],
+        [
+          1424,
+          5645
+        ]
+      ]
+    },
+    "at_0.5": {
+      "threshold": 0.5,
+      "accuracy": 0.8653224534847052,
+      "sensitivity": 0.15292120526241335,
+      "specificity": 0.9806490026793688,
+      "precision": 0.5612668743509865,
+      "f1": 0.24035575319622013,
+      "confusion_matrix": [
+        [
+          42822,
+          845
+        ],
+        [
+          5988,
+          1081
+        ]
+      ]
+    }
+  },
+  "permutation_importance": {
+    "Age": 0.0303,
+    "Sex": -0.0045,
+    "BMI": 0.0339,
+    "HighBP": 0.0118,
+    "HighChol": 0.0058,
+    "GenHlth": 0.054,
+    "PhysActivity": -0.0063,
+    "Fruits": -0.0064,
+    "Veggies": -0.0063,
+    "Smoker": -0.0064,
+    "HvyAlcoholConsump": -0.0019,
+    "Stroke": -0.0057,
+    "HeartDiseaseorAttack": -0.0045,
+    "DiffWalk": -0.0046
+  },
+  "reference_values": {
+    "Age": 8.0,
+    "Sex": 0.0,
+    "BMI": 27.0,
+    "HighBP": 0.0,
+    "HighChol": 0.0,
+    "GenHlth": 2.0,
+    "PhysActivity": 1.0,
+    "Fruits": 1.0,
+    "Veggies": 1.0,
+    "Smoker": 0.0,
+    "HvyAlcoholConsump": 0.0,
+    "Stroke": 0.0,
+    "HeartDiseaseorAttack": 0.0,
+    "DiffWalk": 0.0
+  },
+  "unknown_priors": {
+    "HighBP": {
+      "1": 0.0863157894736842,
+      "2": 0.11595156620163201,
+      "3": 0.14708262159489346,
+      "4": 0.18584967083845763,
+      "5": 0.23154050875781396,
+      "6": 0.2893687875271204,
+      "7": 0.3594664437181728,
+      "8": 0.4297158796056046,
+      "9": 0.4968716159306943,
+      "10": 0.5669379387463502,
+      "11": 0.6194280372243233,
+      "12": 0.6528160200250313,
+      "13": 0.6501180671542937
+    },
+    "HighChol": {
+      "1": 0.08807017543859649,
+      "2": 0.12542774414319557,
+      "3": 0.16434415175761935,
+      "4": 0.2131953989727266,
+      "5": 0.26521012564213653,
+      "6": 0.33124779252232706,
+      "7": 0.39055255757391505,
+      "8": 0.45374935132330046,
+      "9": 0.5080315244856215,
+      "10": 0.5542337081443748,
+      "11": 0.5758721794926274,
+      "12": 0.5556946182728411,
+      "13": 0.5229511029200024
+    }
+  }
+}

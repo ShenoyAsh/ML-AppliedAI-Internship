@@ -1,0 +1,136 @@
+{
+  "model": "clinical",
+  "title": "Detailed check (Pima Indians Diabetes Dataset)",
+  "model_name": "Logistic Regression",
+  "trained_at": "2026-10-17T14:06:58+00:00",
+  "sklearn_version": "1.9.1",
+  "features": [
+    "Pregnancies",
+    "Glucose",
+    "BloodPressure",
+    "SkinThickness",
+    "Insulin",
+    "BMI",
+    "DiabetesPedigreeFunction",
+    "Age"
+  ],
+  "n_patients": 768,
+  "n_train": 614,
+  "n_test": 154,
+  "prevalence": 0.3489583333333333,
+  "target_sensitivity": 0.8,
+  "screening_threshold": 0.3002788301244283,
+  "high_threshold": 0.5,
+  "cv": {
+    "Logistic Regression": {
+      "roc_auc_mean": 0.8357,
+      "roc_auc_std": 0.0362,
+      "accuracy_mean": 0.7834,
+      "accuracy_std": 0.0309,
+      "recall_mean": 0.5889,
+      "recall_std": 0.0591,
+      "precision_mean": 0.7433,
+      "precision_std": 0.0705,
+      "f1_mean": 0.6541,
+      "f1_std": 0.0491
+    },
+    "Random Forest": {
+      "roc_auc_mean": 0.834,
+      "roc_auc_std": 0.0349,
+      "accuracy_mean": 0.7583,
+      "accuracy_std": 0.0312,
+      "recall_mean": 0.5442,
+      "recall_std": 0.0646,
+      "precision_mean": 0.7029,
+      "precision_std": 0.0664,
+      "f1_mean": 0.6098,
+      "f1_std": 0.0498
+    },
+    "Gradient Boosting": {
+      "roc_auc_mean": 0.8212,
+      "roc_auc_std": 0.0288,
+      "accuracy_mean": 0.7616,
+      "accuracy_std": 0.0313,
+      "recall_mean": 0.5993,
+      "recall_std": 0.067,
+      "precision_mean": 0.685,
+      "precision_std": 0.0629,
+      "f1_mean": 0.6358,
+      "f1_std": 0.0466
+    },
+    "Support Vector Machine": {
+      "roc_auc_mean": 0.8274,
+      "roc_auc_std": 0.0278,
+      "accuracy_mean": 0.7635,
+      "accuracy_std": 0.0287,
+      "recall_mean": 0.5618,
+      "recall_std": 0.0656,
+      "precision_mean": 0.7044,
+      "precision_std": 0.0586,
+      "f1_mean": 0.6222,
+      "f1_std": 0.0503
+    }
+  },
+  "test": {
+    "roc_auc": 0.8177777777777778,
+    "pr_auc": 0.6904948135069605,
+    "brier": 0.17036935566176017,
+    "baseline_accuracy": 0.6493506493506493,
+    "at_screening_threshold": {
+      "threshold": 0.3003,
+      "accuracy": 0.7337662337662337,
+      "sensitivity": 0.7962962962962963,
+      "specificity": 0.7,
+      "precision": 0.589041095890411,
+      "f1": 0.6771653543307087,
+      "confusion_matrix": [
+        [
+          70,
+          30
+        ],
+        [
+          11,
+          43
+        ]
+      ]
+    },
+    "at_0.5": {
+      "threshold": 0.5,
+      "accuracy": 0.7207792207792207,
+      "sensitivity": 0.5370370370370371,
+      "specificity": 0.82,
+      "precision": 0.6170212765957447,
+      "f1": 0.5742574257425742,
+      "confusion_matrix": [
+        [
+          82,
+          18
+        ],
+        [
+          25,
+          29
+        ]
+      ]
+    }
+  },
+  "permutation_importance": {
+    "Pregnancies": 0.0318,
+    "Glucose": 0.1583,
+    "BloodPressure": 0.0096,
+    "SkinThickness": -0.003,
+    "Insulin": 0.0097,
+    "BMI": 0.0313,
+    "DiabetesPedigreeFunction": 0.0112,
+    "Age": 0.005
+  },
+  "reference_values": {
+    "Pregnancies": 3.0,
+    "Glucose": 117.0,
+    "BloodPressure": 72.0,
+    "SkinThickness": 29.0,
+    "Insulin": 125.0,
+    "BMI": 32.3,
+    "DiabetesPedigreeFunction": 0.3725,
+    "Age": 29.0
+  }
+}
