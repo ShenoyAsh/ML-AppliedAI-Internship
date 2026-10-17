@@ -94,19 +94,20 @@ def show_result(spec, model, metrics, values, tips, answers, risk_label):
         df["direction"] = [raises if v > 0 else lowers for v in df["change"]]
         st.altair_chart(
             alt.Chart(df).mark_bar(cornerRadius=3).encode(
-                x=alt.X("change:Q", title=T("res.axis")),
+                x=alt.X("change:Q", title=None),
                 y=alt.Y("factor:N", sort=None, title=None,
-                          axis=alt.Axis(labelLimit=220),
+                          axis=alt.Axis(labelLimit=160),
                           scale=alt.Scale(paddingInner=0.35)),
                 color=alt.Color("direction:N", title=None,
                                 scale=alt.Scale(domain=[raises, lowers],
                                                 range=["#eb6834", "#2a78d6"]),
-                                legend=alt.Legend(orient="top")),
+                                legend=alt.Legend(orient="top", direction="vertical", labelLimit=0)),
                 tooltip=[alt.Tooltip("factor:N", title=T("res.factor")),
                          alt.Tooltip("change:Q", title=T("res.change"), format="+.1f")],
             ).properties(height=alt.Step(34)),
             width="stretch")
-        st.caption(T("res.drivers_caption"))
+        # Axis title as a caption: a long title overflows the chart on phones.
+        st.caption(f'**{T("res.axis")}**  \n{T("res.drivers_caption")}')
 
     st.subheader(T("res.next_steps"))
     tip_texts = [T(k, **p) for k, p in tips]

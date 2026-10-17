@@ -84,6 +84,15 @@ weighted by how common each is at their age.
   aged 30+, India-specific BMI advice (23 or more) and the tobacco quitline.
 - A **downloadable summary** in the chosen language to show a doctor.
 
+## Screenshots
+| Quick check result | Detailed check result |
+|---|---|
+| ![Quick check result](images/02_quick_check_result.png) | ![Detailed check result](images/03_detailed_check_result.png) |
+| **Hindi** | **Kannada, on a phone** |
+| ![Hindi result](images/06_hindi_result.png) | ![Kannada mobile result](images/08_kannada_mobile_result.png) |
+
+More in [`images/`](images): the question form, the model page and the About tab.
+
 ## How to run
 ```bash
 pip install -r requirements.txt
@@ -92,6 +101,15 @@ streamlit run app.py     # opens the web app in your browser
 pytest                   # 40 tests: data, models, advice, translations, app end-to-end
 ```
 `python train.py --model clinical` trains one model; `--fast` uses fewer CV folds.
+
+### Deploy on Streamlit Community Cloud (free)
+The trained models are committed in `artifacts/`, so the app runs without retraining.
+1. Sign in at [share.streamlit.io](https://share.streamlit.io) with GitHub.
+2. **Create app** → repository `ShenoyAsh/ML-AppliedAI-Internship`, branch `main`, main file `app.py`.
+3. Under **Advanced settings**, choose Python 3.12, then **Deploy**.
+
+`scikit-learn` is pinned in `requirements.txt` because a saved model only loads reliably with the
+version that trained it. If you upgrade it, retrain with `python train.py` and commit `artifacts/`.
 
 ## Project structure
 ```
